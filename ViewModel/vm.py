@@ -1,47 +1,91 @@
-﻿import tkinter as tk
+﻿# ViewModel/vm.py
 from Model.ConveyorModel import ConveyorModel
 
 class ConveyorViewModel:
-    
     def __init__(self):
         self.model = ConveyorModel()
         
-        self.productivityPerYear = 0.0
-        self.hoursAtDay = 0.0
-        self.volumeForms = 0.0
-        self.daysPerYear = 247
-        self.coeffUsability = 0.95
-        self.product_type = 'type1'
-        self.concrete_volume = 'low'
+        # Параметры для расчета
+        self._productivity_per_year = 0.0
+        self._hours_per_day = 8.0
+        self._volume_forms = 0.0
+        self._line_type = "Конвейерные линии"
+        self._product_type = "Изделия однослойные несложной конфигурации"
+        self._volume_range = "до 3,5"
+        self._coeff_usability = 0.95
         
-        self.result_text = ""
-        
-        self.update_result_callback = None
-    
-    def set_update_callback(self, callback):
-        self.update_result_callback = callback
+        # Результаты
+        self._result_text = ""
+        self._update_callback = None
     
     def calculate(self):
         try:
-            timeOfCycle = self.model.get_forming_cycle(self.product_type, self.concrete_volume)
-            lineProd = self.model.calculate_line_productivity(
-                self.coeffUsability, self.daysPerYear, self.hoursAtDay, self.volumeForms, timeOfCycle
-            )
-            numberOfLines = self.model.calculate_lines(self.productivityPerYear, lineProd, self.coeffUsability)
-            Nkl_rounded = int(numberOfLines) + 1 if numberOfLines > int(numberOfLines) else int(numberOfLines)
+            days_per_year = self.model.get_working_days(self._line_type)
+            time_of_cycle = self.model.get_forming_cycle(self._product_type, self._volume_range)
             
-            self.result_text = (
+            # Расчеты
+            line_prod = self.model.calculate_line_productivity(
+                days_per_year, self._hours_per_day, self._volume_forms, time_of_cycle
+            )
+            number_of_lines = self.model.calculate_lines(
+                self._productivity_per_year, line_prod, self._coeff_usability
+            )
+            number_of_lines_rounded = int(number_of_lines) + 1 if number_of_lines > int(number_of_lines) else int(number_of_lines)
+            
+            # Формирование результата
+            self._result_text = (
                 f"Результаты расчета:\n"
-                f"Производительность линии: {lineProd:.2f} м³\n"
-                f"Цикл формования: {timeOfCycle} мин\n"
-                f"Требуемое количество линий: {numberOfLines:.2f}\n"
-                f"Рекомендуемое количество: {Nkl_rounded}"
+                f"Рабочих дней в году: {days_per_year}\n"
+                f"Цикл формования: {time_of_cycle} мин\n"
+                f"Годовая производительность линии: {line_prod:.2f} м³\n"
+                f"Требуемое количество линий: {number_of_lines:.2f}\n"
+                f"Рекомендуемое количество: {number_of_lines_rounded}"
             )
             
-            if self.update_result_callback:
-                self.update_result_callback()
-                
         except Exception as e:
-            self.result_text = f"Ошибка: {str(e)}"
-            if self.update_result_callback:
-                self.update_result_callback()
+            self._result_text = f"Ошибка: {str(e)}"
+  
+        if self._update_callback:
+                self._update_callback()
+
+    # Свойства для доступа к данным
+    def productivity_per_year(self):
+        return self._productivity_per_year
+    def productivity_per_year(self, value):
+        self._productivity_per_year = value
+
+    def hours_per_day(self):
+        return self._hours_per_day
+    def hours_per_day(self, value):
+        self._hours_per_day = value
+    
+    def volume_forms(self):
+        return self._volume_forms
+    def volume_forms(self, value):
+        self._volume_forms = value
+    
+    def line_type(self):
+        return self._line_type
+    def line_type(self, value):
+        self._line_type = value
+    
+    def product_type(self):
+        return self._product_type
+    def product_type(self, value):
+        self._product_type = value
+    
+    def volume_range(self):
+        return self._volume_range
+    def volume_range(self, value):
+        self._volume_range = value
+    
+    def coeff_usability(self):
+        return self._coeff_usability
+    def coeff_usability(self, value):
+        self._coeff_usability = value
+    
+    def result_text(self):
+        return self._result_text
+    
+    def set_update_callback(self, callback):
+        self._update_callback = callback

@@ -1,4 +1,5 @@
-﻿import tkinter as tk
+﻿# pythonlab2.py (остается без изменений)
+import tkinter as tk
 from View.main_window import ConveyorView
 from ViewModel.vm import ConveyorViewModel
 
