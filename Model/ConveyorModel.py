@@ -1,14 +1,11 @@
-# Model/ConveyorModel.py
+
 class ConveyorModel:
-    @staticmethod
     def calculate_lines(productivity_per_year, line_prod, coeff_usability):
         return productivity_per_year / (line_prod * coeff_usability)
     
-    @staticmethod
     def calculate_line_productivity(days_per_year, hours_per_day, volume_forms, time_of_cycle):
         return 60 * days_per_year * hours_per_day * volume_forms / time_of_cycle
     
-    @staticmethod
     def get_forming_cycle(product_type, volume_range):
         cycles = {
             'Изделия однослойные несложной конфигурации': {'до 3,5': 12, 'от 3,5 до 5,0': 22},
@@ -17,7 +14,6 @@ class ConveyorModel:
         }
         return cycles[product_type][volume_range]
     
-    @staticmethod
     def get_working_days(line_type):
         days = {
             'Агрегатно-поточные и стендовые линии': 253,

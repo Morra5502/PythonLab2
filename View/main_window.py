@@ -1,5 +1,4 @@
-﻿# View/main_window.py
-import tkinter as tk
+﻿import tkinter as tk
 from tkinter import ttk, messagebox
 from tkinter.scrolledtext import ScrolledText
 
@@ -15,60 +14,67 @@ class ConveyorView:
         self.root.title("Расчет требуемого количества линий конвейера")
         
         # Основной фрейм для ввода параметров
-        main_frame = ttk.LabelFrame(self.root, text="Параметры расчета")
-        main_frame.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
+        self.main_frame = ttk.LabelFrame(self.root, text="Параметры расчета")
+        self.main_frame.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
+        # Фрейм с результатами
+        self.result_text = ScrolledText(self.root, height=10)
+        self.result_text.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
         
-        ttk.Label(main_frame, text="Требуемая годовая производительность цеха (м³):").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.pg_entry = ttk.Entry(main_frame)
-        self.pg_entry.grid(row=0, column=1, padx=5, pady=5)
+        ttk.Label(self.main_frame, text="Требуемая годовая производительность цеха (м³):").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
+        self.pg_entry = ttk.Entry(self.main_frame)
+        self.pg_entry.insert(0, "0")
+        self.pg_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
         
-        ttk.Label(main_frame, text="Число часов работы в сутки:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.hours_entry = ttk.Entry(main_frame)
+        ttk.Label(self.main_frame, text="Число часов работы в сутки:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
+        self.hours_entry = ttk.Entry(self.main_frame)
         self.hours_entry.insert(0, "8")
-        self.hours_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.hours_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
         
-        ttk.Label(main_frame, text="Объем одной формовки (м³):").grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
-        self.volume_entry = ttk.Entry(main_frame)
-        self.volume_entry.grid(row=2, column=1, padx=5, pady=5)
+        ttk.Label(self.main_frame, text="Объем одной формовки (м³):").grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
+        self.volume_entry = ttk.Entry(self.main_frame)
+        self.volume_entry.insert(0, "0")
+        self.volume_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.W)
         
-        ttk.Label(main_frame, text="Тип технологической линии:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
-        self.line_type_combo = ttk.Combobox(main_frame, values=[
+        ttk.Label(self.main_frame, text="Тип технологической линии:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
+        self.line_type_combo = ttk.Combobox(self.main_frame, state= 'readonly', values=[
             "Агрегатно-поточные и стендовые линии",
             "Конвейерные линии",
             "Цехи по приготовлению бетона"
         ])
+        self.line_type_combo.configure()
         self.line_type_combo.set("Конвейерные линии")
         self.line_type_combo.grid(row=3, column=1, padx=5, pady=5, sticky=tk.EW)
         
-        ttk.Label(main_frame, text="Тип изделия:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
-        self.product_type_combo = ttk.Combobox(main_frame, values=[
+        ttk.Label(self.main_frame, text="Тип изделия:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
+        self.product_type_combo = ttk.Combobox(self.main_frame, values=[
             "Изделия однослойные несложной конфигурации",
             "Изделия однослойные сложной конфигурации",
             "Изделия многослойные, крупногабаритные"
         ])
+        self.adjust_combobox_width(self.product_type_combo)
+        self.product_type_combo.configure(state= 'readonly')
         self.product_type_combo.set("Изделия однослойные несложной конфигурации")
-        self.product_type_combo.grid(row=4, column=1, padx=5, pady=5, sticky=tk.EW)
+        self.product_type_combo.grid(row=4, column=1, padx=5, pady=5, sticky=tk.E)
         
-        ttk.Label(main_frame, text="Объем бетона в одной формовке:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=5)
-        self.volume_range_combo = ttk.Combobox(main_frame, values=["до 3,5", "от 3,5 до 5,0"])
+        ttk.Label(self.main_frame, text="Объем бетона в одной формовке:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=5)
+        self.volume_range_combo = ttk.Combobox(self.main_frame, values=["до 3,5", "от 3,5 до 5,0"])
         self.volume_range_combo.set("до 3,5")
-        self.volume_range_combo.grid(row=5, column=1, padx=5, pady=5, sticky=tk.EW)
+        self.volume_range_combo.configure(state= 'readonly')
+        self.volume_range_combo.grid(row=5, column=1, padx=5, pady=5, sticky=tk.W)
         
-        ttk.Label(main_frame, text="Коэффициент использования оборудования:").grid(row=6, column=0, sticky=tk.W, padx=5, pady=5)
-        self.coeff_entry = ttk.Entry(main_frame)
+        ttk.Label(self.main_frame, text="Коэффициент использования оборудования:").grid(row=6, column=0, sticky=tk.W, padx=5, pady=5)
+        self.coeff_entry = ttk.Entry(self.main_frame)
         self.coeff_entry.insert(0, "0.95")
-        self.coeff_entry.grid(row=6, column=1, padx=5, pady=5)
+        self.coeff_entry.grid(row=6, column=1, padx=5, pady=5, sticky=tk.W)
         
         # Кнопки
         btn_frame = ttk.Frame(self.root)
         btn_frame.pack(pady=5)
         
         ttk.Button(btn_frame, text="Рассчитать", command=self.on_calculate).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="Сохранить в word", command=self.save_to_word).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="Сохранить в Word", command=self.save_to_word).pack(side=tk.LEFT, padx=5)
         
-        # Результаты
-        self.result_text = ScrolledText(self.root, height=10)
-        self.result_text.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
+        
     
     def on_calculate(self):
         try:
@@ -89,6 +95,11 @@ class ConveyorView:
     def update_result(self):
         self.result_text.delete(1.0, tk.END)
         self.result_text.insert(tk.END, self.vm.result_text)
+
+    def adjust_combobox_width(self, combobox):
+        max_len = max(len(str(x)) for x in combobox['values'])
+        combobox.config(width=max_len + 2)  # +2 для запаса
+
     
     def save_to_word(self):
-        self.g = r
+        self.g = "fg"
