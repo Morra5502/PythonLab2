@@ -1,4 +1,3 @@
-
 class ConveyorModel:
     def calculate_lines(productivity_per_year, line_prod, coeff_usability):
         return productivity_per_year / (line_prod * coeff_usability)
@@ -14,10 +13,3 @@ class ConveyorModel:
         }
         return cycles[product_type][volume_range]
     
-    def get_working_days(line_type):
-        days = {
-            'Агрегатно-поточные и стендовые линии': 253,
-            'Конвейерные линии': 247,
-            'Цехи по приготовлению бетона': 253
-        }
-        return days[line_type]

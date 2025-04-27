@@ -1,6 +1,6 @@
 ﻿import tkinter as tk
-from View.main_window import ConveyorView
-from ViewModel.vm import ConveyorViewModel
+from Views.MainWindow import ConveyorView
+from ViewModels.ConveyorViewModel import ConveyorViewModel
 
 def main():
     root = tk.Tk()

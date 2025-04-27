@@ -35,17 +35,7 @@ class ConveyorView:
         self.volume_entry.insert(0, "0")
         self.volume_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.W)
         
-        ttk.Label(self.main_frame, text="Тип технологической линии:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
-        self.line_type_combo = ttk.Combobox(self.main_frame, state= 'readonly', values=[
-            "Агрегатно-поточные и стендовые линии",
-            "Конвейерные линии",
-            "Цехи по приготовлению бетона"
-        ])
-        self.line_type_combo.configure()
-        self.line_type_combo.set("Конвейерные линии")
-        self.line_type_combo.grid(row=3, column=1, padx=5, pady=5, sticky=tk.EW)
-        
-        ttk.Label(self.main_frame, text="Тип изделия:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
+        ttk.Label(self.main_frame, text="Тип изделия:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
         self.product_type_combo = ttk.Combobox(self.main_frame, values=[
             "Изделия однослойные несложной конфигурации",
             "Изделия однослойные сложной конфигурации",
@@ -54,12 +44,18 @@ class ConveyorView:
         self.adjust_combobox_width(self.product_type_combo)
         self.product_type_combo.configure(state= 'readonly')
         self.product_type_combo.set("Изделия однослойные несложной конфигурации")
-        self.product_type_combo.grid(row=4, column=1, padx=5, pady=5, sticky=tk.E)
+        self.product_type_combo.grid(row=3, column=1, padx=5, pady=5, sticky=tk.E)
+        
+        ttk.Label(self.main_frame, text="Кол-во рабочих дней в году:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
+        self.working_days = ttk.Combobox(self.main_frame, values=["247", "249"])
+        self.working_days.configure(state= 'readonly')
+        self.working_days.set("247")
+        self.working_days.grid(row=4, column=1, padx=5, pady=5, sticky=tk.W)
         
         ttk.Label(self.main_frame, text="Объем бетона в одной формовке:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=5)
         self.volume_range_combo = ttk.Combobox(self.main_frame, values=["до 3,5", "от 3,5 до 5,0"])
-        self.volume_range_combo.set("до 3,5")
         self.volume_range_combo.configure(state= 'readonly')
+        self.volume_range_combo.set("до 3,5")
         self.volume_range_combo.grid(row=5, column=1, padx=5, pady=5, sticky=tk.W)
         
         ttk.Label(self.main_frame, text="Коэффициент использования оборудования:").grid(row=6, column=0, sticky=tk.W, padx=5, pady=5)
@@ -72,7 +68,7 @@ class ConveyorView:
         btn_frame.pack(pady=5)
         
         ttk.Button(btn_frame, text="Рассчитать", command=self.on_calculate).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="Сохранить в Word", command=self.save_to_word).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="Сохранить в Word", command=self.vm.save_to_word).pack(side=tk.LEFT, padx=5)
         
         
     
@@ -82,9 +78,9 @@ class ConveyorView:
             self.vm.productivity_per_year = float(self.pg_entry.get())
             self.vm.hours_per_day = float(self.hours_entry.get())
             self.vm.volume_forms = float(self.volume_entry.get())
-            self.vm.line_type = self.line_type_combo.get()
             self.vm.product_type = self.product_type_combo.get()
             self.vm.volume_range = self.volume_range_combo.get()
+            self.vm.working_days = float(self.working_days.get())       
             self.vm.coeff_usability = float(self.coeff_entry.get())
             
             # Вызываем расчет
@@ -101,5 +97,4 @@ class ConveyorView:
         combobox.config(width=max_len + 2)  # +2 для запаса
 
     
-    def save_to_word(self):
-        self.g = "fg"
+    
