@@ -16,19 +16,31 @@ class ConveyorViewModel:
         self._working_days = 247.0
         self._coeff_usability = 0.95
         
-        # Результаты
         self._result_text = ""
         self._update_callback = None
+        
+        #костыль
+        self._isValid = True
     
     #region get set
+    @property
+    def isValid(self):
+        return self._isValid
+    
+    @isValid.setter
+    def isValid(self, value):
+        self._isValid = bool(value)
+    
     @property
     def productivity_per_year(self):
         return self._productivity_per_year
     
     @productivity_per_year.setter
     def productivity_per_year(self, value):
-        self._productivity_per_year = value
-    
+        if value <= 0:
+            self._isValid = False
+        else:
+            self._productivity_per_year = value
     
     @property
     def hours_per_day(self):
@@ -36,7 +48,11 @@ class ConveyorViewModel:
     
     @hours_per_day.setter
     def hours_per_day(self, value):
-        self._hours_per_day = value
+        if value <= 0:
+            self._isValid = False
+        else:
+            self._hours_per_day = value
+            
     
     @property
     def volume_forms(self):
@@ -44,8 +60,11 @@ class ConveyorViewModel:
     
     @volume_forms.setter
     def volume_forms(self, value):
-        self._volume_forms = value
-    
+        if value <= 0:
+            self._isValid = False
+        else:
+            self._volume_forms = value            
+        
     @property
     def product_type(self):
         return self._product_type
@@ -66,9 +85,12 @@ class ConveyorViewModel:
     def working_days(self):
         return self._working_days
     
-    @productivity_per_year.setter
+    @working_days.setter
     def working_days(self, value):
-        self._working_days = value
+        if value <= 0:
+            self._isValid = False
+        else:
+            self._working_days = value
     
     @property
     def coeff_usability(self):

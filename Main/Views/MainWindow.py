@@ -78,13 +78,19 @@ class ConveyorView:
             self.vm.productivity_per_year = float(self.pg_entry.get())
             self.vm.hours_per_day = float(self.hours_entry.get())
             self.vm.volume_forms = float(self.volume_entry.get())
+            self.vm.working_days = float(self.working_days.get())       
+
             self.vm.product_type = self.product_type_combo.get()
             self.vm.volume_range = self.volume_range_combo.get()
-            self.vm.working_days = float(self.working_days.get())       
             self.vm.coeff_usability = float(self.coeff_entry.get())
             
             # Вызываем расчет
-            self.vm.calculate()
+            if(self.vm.isValid):
+                self.vm.calculate()
+            else:
+                self.vm.isValid = True
+                raise ValueError
+                
         except ValueError as e:
             messagebox.showerror("Ошибка", "Проверьте правильность введенных данных!")
     
